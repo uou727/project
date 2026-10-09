@@ -4,7 +4,7 @@ from app.config import settings
 from sqlalchemy import DateTime, create_engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker
 
-create_engine = create_engine(settings.DATABASE_URL)
+engine = create_engine(settings.DATABASE_URL)
 
 # 数据库session会话的连接工厂
 SessionLocal = sessionmaker(engine=create_engine, autoflush=False)
@@ -28,7 +28,7 @@ class Base(DeclarativeBase):
     )
     create_time: Mapped[datetime] = mapped_column(
         DateTime,
-        confloat=datetime.now,
+        default=datetime.now,
         comment="创建时间",
     )
     update_time: Mapped[datetime] = mapped_column(
