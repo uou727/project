@@ -1,13 +1,14 @@
 from datetime import datetime
 
-from app.config import settings
 from sqlalchemy import DateTime, create_engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker
+
+from app.config import settings
 
 engine = create_engine(settings.DATABASE_URL)
 
 # 数据库session会话的连接工厂
-SessionLocal = sessionmaker(engine=create_engine, autoflush=False)
+SessionLocal = sessionmaker(bind=engine, autoflush=False)
 
 
 def get_db():
