@@ -1,0 +1,19 @@
+from typing import Any
+
+from pydantic import BaseModel
+
+
+class Response(BaseModel):
+    """统一封装的返回格式"""
+
+    code: int = 200
+    message: str = "success"
+    data: Any = None
+
+    @classmethod
+    def success(cls, message: str = "success", data: Any = None) -> "Response":
+        return cls(code=200, message=message, data=data)
+
+    @classmethod
+    def error(cls, code: int = 400, message: str = "请求失败") -> "Response":
+        return cls(code=code, message=message)
