@@ -19,6 +19,7 @@ const router = createRouter({
   ]
 })
 
+// 路由守卫  验证token
 router.beforeEach((to, from) => {
   const token = getToken()
   if (to.path === '/login' || to.path === '/register') {

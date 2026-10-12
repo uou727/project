@@ -36,6 +36,7 @@ service.interceptors.response.use(
     if (err.response) {
       const hettpStatusCode = err.response.status
       if (hettpStatusCode === 401) {
+        ElMessage.error('登录状态失效，请重新登陆')
         logout()
         router.push('/login')
         return Promise.reject(data)
