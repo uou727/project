@@ -35,5 +35,6 @@ class Base(DeclarativeBase):
     update_time: Mapped[datetime] = mapped_column(
         DateTime,
         onupdate=datetime.now,
+        default=datetime.now,  # 新增这一行！插入的时候填充
         comment="更新时间",
     )
