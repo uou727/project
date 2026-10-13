@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.exceptions import RequestValidationError
+from fastapi.staticfiles import StaticFiles
 from starlette.middleware.cors import CORSMiddleware
 
 from app.api import api
@@ -10,6 +11,7 @@ from app.common.exceptions import (
     http_exception_handler,
     validation_exception_handler,
 )
+from app.config import UPLOAD_DIR
 from app.database import Base, engine
 
 Base.metadata.create_all(bind=engine)  # 自动创建数据库和数据库的表
@@ -37,6 +39,9 @@ app.add_exception_handler(HTTPException, http_exception_handler)
 app.add_exception_handler(RequestValidationError, validation_exception_handler)
 # 全局的异常兜底，必须放在最后注册
 app.add_exception_handler(Exception, global_excpetion_handler)
+
+# 挂载静态文件目录      http://127.0.0.1:8000/uploads/xxx.jpg
+app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="upload")
 
 
 @app.get("/")

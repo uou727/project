@@ -2,13 +2,14 @@ from sqlalchemy.orm import Session
 
 from app.common.exceptions import BusinessException
 from app.models.user import User
-from app.schemas.auth import LoginRequest, RegisterRequest
+from app.schemas.auth import LoginResponse, RegisterRequest
 from app.schemas.user import UserResponse
 from app.utils.jwt import create_access_token
 from app.utils.password import hash_password, verify_password
 
 
-def login(db: Session, data: LoginRequest):
+# 登录
+def login(db: Session, data: LoginResponse):
     # 根据用户账号查询数据库
     user = db.query(User).filter(User.username == data.username).first()
 
@@ -20,9 +21,10 @@ def login(db: Session, data: LoginRequest):
         raise BusinessException(message="账号被禁用")
 
     token = create_access_token(user_id=user.id)
-    return LoginRequest(token=token, user=UserResponse.model_validate(user))
+    return LoginResponse(token=token, user=UserResponse.model_validate(user))
 
 
+# 注册
 def register(db: Session, data: RegisterRequest) -> None:
     exists = db.query(User).filter(User.username == data.username).first()
     if exists:
