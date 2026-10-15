@@ -74,7 +74,6 @@ const login = async () => {
       saveLoginData(res.data)
       ElMessage.success('登录成功')
       loadingValue.value = false
-      console.log('111')
 
       await router.push('/manager/home')
     } else {

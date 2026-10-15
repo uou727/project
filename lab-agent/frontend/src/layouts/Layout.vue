@@ -24,6 +24,7 @@
             <template #dropdown>
               <el-dropdown-menu>
                 <el-dropdown-item @click="goPersion">个人信息</el-dropdown-item>
+                <el-dropdown-item @click="goPassword">修改密码</el-dropdown-item>
                 <el-dropdown-item @click="handleLogout">退出登录</el-dropdown-item>
               </el-dropdown-menu>
             </template>
@@ -79,5 +80,9 @@ const handleLogout = () => {
 
 const goPersion = () => {
   router.push('/manager/profile')
+}
+
+const goPassword = () => {
+  router.push('/manager/password')
 }
 </script>

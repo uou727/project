@@ -34,11 +34,20 @@ export function getUserInfo(data) {
 }
 
 /**
- * 修改当前登录用户
+ * 更新当前登录用户信息
  * */
 export function updateUserInfo(data) {
   return request({
-    url: '/api/user/update',
+    url: '/api/user/me',
+    method: 'put',
+    data
+  })
+}
+
+/** 修改当前用户密码 */
+export function updatePasswordApi(data) {
+  return request({
+    url: '/api/user/password',
     method: 'put',
     data
   })
