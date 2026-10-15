@@ -70,11 +70,12 @@ const login = async () => {
   loadingValue.value = true
   try {
     const res = await loginApi(form)
-    console.log(res)
     if (res.code === 200) {
       saveLoginData(res.data)
       ElMessage.success('登录成功')
       loadingValue.value = false
+      console.log('111')
+
       await router.push('/manager/home')
     } else {
       ElMessage.error(res.data.message)

@@ -18,12 +18,13 @@
         <div>
           <el-dropdown>
             <div style="display: flex; align-items: center; cursor: pointer">
-              <img src="@/assets/imgs/logo.png" alt="" style="width: 30px; border-radius: 50%" />
-              <div style="margin-left: 3px">管理员</div>
+              <img :src="userInfo?.avatar" alt="" style="width: 30px; border-radius: 50%" />
+              <div style="margin-left: 3px">{{ userInfo?.name }}</div>
             </div>
             <template #dropdown>
               <el-dropdown-menu>
-                <el-dropdown-item @click="logout">退出登录</el-dropdown-item>
+                <el-dropdown-item @click="goPersion">个人信息</el-dropdown-item>
+                <el-dropdown-item @click="handleLogout">退出登录</el-dropdown-item>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
@@ -66,11 +67,17 @@
 import { Document, Menu as IconMenu, Location, Setting, User, House } from '@element-plus/icons-vue'
 import { useRouter } from 'vue-router'
 import { removeToken, removeUserInfo } from '@/utils/auth'
+import { useUser } from '@/utils/user'
+const { userInfo } = useUser()
 const router = useRouter()
 
-const logout = () => {
+const handleLogout = () => {
   router.push('/login')
   removeToken()
   removeUserInfo()
+}
+
+const goPersion = () => {
+  router.push('/manager/profile')
 }
 </script>

@@ -19,6 +19,10 @@ export default defineConfig({
       '/api': {
         target: 'http://127.0.0.1:8000', // 后端地址
         changeOrigin: true // 修改源，核心
+      },
+      '/uploads': {
+        target: 'http://127.0.0.1:8000', // 后端地址
+        changeOrigin: true // 修改源，核心
       }
     }
   }

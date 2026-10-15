@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { getToken, logout } from './auth'
 import { ElMessage } from 'element-plus'
+import router from '@/router'
 const service = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URLF,
   timeout: 30000
@@ -11,7 +12,7 @@ service.interceptors.request.use(
   (config) => {
     const token = getToken()
     if (token) {
-      config.headers.Authorization = `Bear ${token}`
+      config.headers.Authorization = `Bearer ${token}`
     }
     return config
   },
