@@ -3,9 +3,12 @@ from sqlalchemy.orm import Session
 
 from app.common.response import Response
 from app.database import get_db
-from app.dependence.auth import get_current_user
+from app.dependence.auth import (
+    get_current_admin,
+    get_current_user,
+)
 from app.models.user import User
-from app.schemas.user import PasswordUpdateRequest, UserUpdateRequest
+from app.schemas.user import PasswordUpdateRequest, UserCreateRequest, UserUpdateRequest
 from app.services import user_service
 
 router = APIRouter(prefix="/user", tags=["用户信息"])
@@ -36,3 +39,50 @@ def update_password(
     """修改当前用户密码"""
     user_service.update_password(db, current_user, data)
     return Response.success("密码修改成功")
+
+
+@router.get("/list")
+def get_user_list(
+    page: int = 1,
+    page_size: int = 10,
+    keywords: str | None = None,
+    current_user: User = Depends(get_current_admin),
+    db: Session = Depends(get_db),
+):
+    """管理员查询用户信息"""
+    res = user_service.get_user_page_list(db, page, page_size, keywords)
+    return Response.success(data=res)
+
+
+@router.post("")
+def create_user(
+    data: UserCreateRequest,
+    current_user: User = Depends(get_current_admin),
+    db: Session = Depends(get_db),
+):
+    """管理员创建用户信息"""
+    res = user_service.create_user(db, data)
+    return Response.success(data=res)
+
+
+@router.put("/{user_id}")
+def update_user(
+    user_id: int,
+    data: UserUpdateRequest,
+    current_user: User = Depends(get_current_admin),
+    db: Session = Depends(get_db),
+):
+    """更新用户信息"""
+    res = user_service.update_user(db, user_id, data)
+    return Response.success(data=res)
+
+
+@router.delete("/{user_id}")
+def delete_user(
+    user_id: int,
+    current_user: User = Depends(get_current_admin),
+    db: Session = Depends(get_db),
+):
+    """删除用户"""
+    user_service.delete_user(db, user_id, current_user)
+    return Response.success()

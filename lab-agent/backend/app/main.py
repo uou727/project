@@ -14,6 +14,10 @@ from app.common.exceptions import (
 from app.config import UPLOAD_DIR
 from app.database import Base, engine
 
+# 数据库表
+from app.models.lab import Lab  # noqa
+from app.models.user import User  # noqa
+
 Base.metadata.create_all(bind=engine)  # 自动创建数据库和数据库的表
 
 
