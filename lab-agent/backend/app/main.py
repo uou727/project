@@ -13,9 +13,11 @@ from app.common.exceptions import (
 )
 from app.config import UPLOAD_DIR
 from app.database import Base, engine
+from app.models.equipment import Equipment  # noqa
 
 # 数据库表
 from app.models.lab import Lab  # noqa
+from app.models.reservation import Reservation  # noqa
 from app.models.user import User  # noqa
 
 Base.metadata.create_all(bind=engine)  # 自动创建数据库和数据库的表

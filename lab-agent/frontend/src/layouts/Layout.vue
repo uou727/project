@@ -35,24 +35,38 @@
         <el-aside width="220px">
           <el-menu
             router
-            style="height: 100%; border-right: 1px solid #ddd"
-            :default-active="$route.path"
+            :default-active="router.currentRoute.value.path"
+            style="height: 100%"
+            default-active="/manager/home"
           >
             <el-menu-item index="/manager/home">
               <el-icon><icon-menu /></el-icon>
-              <span>系统首页</span>
+              系统首页
             </el-menu-item>
-            <el-menu-item v-if="userInfo?.role === 'admin'" index="/manager/lab">
+            <el-menu-item index="/manager/lablist" v-if="userInfo?.role === 'student'">
+              <el-icon><OfficeBuilding /></el-icon>
+              实验室列表
+            </el-menu-item>
+            <el-menu-item index="/manager/lab" v-if="userInfo?.role === 'admin'">
               <el-icon><House /></el-icon>
               实验室管理
             </el-menu-item>
-            <el-menu-item index="/manager/equ">
+            <el-menu-item index="/manager/equipment" v-if="userInfo?.role === 'admin'">
               <el-icon><Setting /></el-icon>
-              <span>设备列表管理</span>
+              设备列表管理
             </el-menu-item>
-            <el-menu-item v-if="userInfo?.role === 'admin'" index="/manager/user">
+            <el-menu-item index="/manager/user" v-if="userInfo?.role === 'admin'">
               <el-icon><User /></el-icon>
               用户管理
+            </el-menu-item>
+
+            <el-menu-item index="/manager/my-reservation" v-if="userInfo?.role === 'student'">
+              <el-icon><Tickets /></el-icon>
+              <span>我的预约</span>
+            </el-menu-item>
+            <el-menu-item index="/manager/audit-reservation" v-if="userInfo?.role === 'admin'">
+              <el-icon><DocumentChecked /></el-icon>
+              <span>预约审核</span>
             </el-menu-item>
           </el-menu>
         </el-aside>
@@ -65,13 +79,21 @@
 </template>
 
 <script setup>
-import { Document, Menu as IconMenu, Location, Setting, User, House } from '@element-plus/icons-vue'
+import {
+  Menu as IconMenu,
+  House,
+  Setting,
+  User,
+  OfficeBuilding,
+  Tickets,
+  DocumentChecked
+} from '@element-plus/icons-vue'
+
 import { useRouter } from 'vue-router'
 import { removeToken, removeUserInfo } from '@/utils/auth'
 import { useUser } from '@/utils/user'
 const { userInfo } = useUser()
 const router = useRouter()
-
 const handleLogout = () => {
   router.push('/login')
   removeToken()
