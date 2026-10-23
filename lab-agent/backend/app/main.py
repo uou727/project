@@ -1,3 +1,6 @@
+import asyncio
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, HTTPException
 from fastapi.exceptions import RequestValidationError
 from fastapi.staticfiles import StaticFiles
@@ -18,12 +21,20 @@ from app.models.equipment import Equipment  # noqa
 # 数据库表
 from app.models.lab import Lab  # noqa
 from app.models.reservation import Reservation  # noqa
-from app.models.user import User  # noqa
+from app.services import reservation_service
 
 Base.metadata.create_all(bind=engine)  # 自动创建数据库和数据库的表
 
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # 启动项目开启异步的扫描任务
+    task = asyncio.create_task(reservation_service.run_expire_scan())
+    yield
+    task.cancel()  # 关闭项目同时取消异步任务
+
+
+app = FastAPI(lifespan=lifespan)
 """跨域处理"""
 origins = [
     "http://localhost:5173",
