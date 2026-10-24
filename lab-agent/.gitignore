@@ -3,7 +3,6 @@
 backend/.venv/
 backend/venv/
 backend/env/
-
 # Python字节码缓存
 **/__pycache__/
 **/*.py[cod]
@@ -15,61 +14,51 @@ backend/*.egg-info/
 backend/dist/
 backend/build/
 backend/.eggs/
-
 # 环境变量配置文件
 backend/.env
 backend/.env.local
 backend/.env.*.local
-
 # 日志文件
 backend/*.log
 backend/logs/
-
 # 用户上传文件（重点！不要提交上传的图片/文件）
 backend/uploads/
+# Chroma向量数据库存储目录（忽略向量库数据，kb文件夹保留可提交）
+backend/data/chroma/
 
 # ===================== 前端 Vue / Vite =====================
 # 前端依赖包（超大，禁止上传）
 frontend/node_modules/
-
 # 打包产物
 frontend/dist/
 frontend/build/
-
 # vite缓存目录
 frontend/.vite/
 frontend/.nuxt/
 frontend/.output/
-
 # 前端本地环境变量
 frontend/.env
 frontend/.env.local
 frontend/.env.development.local
 frontend/.env.production.local
-
 # 前端日志
 frontend/npm-debug.log*
 frontend/yarn-debug.log*
 frontend/yarn-error.log*
 frontend/pnpm-debug.log*
-
 # ===================== IDE 编辑器 =====================
 # VSCode
 .vscode/
 *.code-workspace
-
 # JetBrains IDE（PyCharm/WebStorm）
 .idea/
 *.iml
-
 # vim临时文件
 *.swp
 *.swo
-
 # ===================== 系统生成垃圾文件 =====================
 # Mac
 .DS_Store
-
 # Windows
 Thumbs.db
 desktop.ini
