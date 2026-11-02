@@ -1,5 +1,5 @@
-from operator import or_
-
+from sqlalchemy import or_
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.common.exceptions import BusinessException
@@ -76,7 +76,12 @@ def create_user(db: Session, data: UserCreateRequest):
         status=data.status,
     )
     db.add(user)
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:
+        # 并发兜底：检查和提交之间账号被其他人创建，唯一索引冲突
+        db.rollback()
+        raise BusinessException(message="账号已存在")
     db.refresh(user)
     return UserResponse.model_validate(user)
 

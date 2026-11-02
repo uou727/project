@@ -1,3 +1,4 @@
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.common.exceptions import BusinessException
@@ -37,5 +38,13 @@ def register(db: Session, data: RegisterRequest) -> None:
         status=1,
     )
     db.add(user)
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:
+        # 并发兜底：检查和提交之间账号被其他人注册，唯一索引冲突
+        db.rollback()
+        raise BusinessException(message="账号已存在")
     db.refresh(user)
+
+
+# 管理员接口的注册逻辑在 user_service.create_user

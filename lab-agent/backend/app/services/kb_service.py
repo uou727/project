@@ -10,20 +10,13 @@ CHROMA_DIR = BASE_DIR / "data" / "chroma"
 _collection = None
 
 
-_embedding_fn = embedding_functions.SentenceTransformerEmbeddingFunction(
-    model_name="BAAI/bge-small-zh-v1.5"
-)
-
-
 def get_embedding_fn():
-    """懒加载 embedding 模型：只加载一次，之后复用同一个实例"""
+    """懒加载 embedding 模型：首次调用才加载/下载，避免应用启动时强依赖网络"""
     global _embedding_fn
-    if _embedding_fn is not None:
-        return _embedding_fn
-    # SentenceTransformerEmbeddingFunction 自带类级缓存，同名模型也不会重复加载
-    _embedding_fn = embedding_functions.SentenceTransformerEmbeddingFunction(
-        model_name="BAAI/bge-small-zh-v1.5"
-    )
+    if _embedding_fn is None:
+        _embedding_fn = embedding_functions.SentenceTransformerEmbeddingFunction(
+            model_name="BAAI/bge-small-zh-v1.5"
+        )
     return _embedding_fn
 
 
@@ -43,7 +36,7 @@ def get_collcetion() -> Collection:
     # 从本地加载所有的向量
     client = chromadb.PersistentClient(path=str(CHROMA_DIR))
     col = client.get_or_create_collection(
-        name="lab_kb", embedding_function=_embedding_fn
+        name="lab_kb", embedding_function=get_embedding_fn()
     )
 
     # 加载
