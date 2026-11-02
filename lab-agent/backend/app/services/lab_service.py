@@ -30,8 +30,9 @@ def get_lab_page_list(
 
     if keywords:
         query = query.filter(Lab.name.ilike(f"%{keywords}%"))
-    # if status:
-    #     query = query.filter(Lab.status == status)
+    if status is not None:
+        # 必须用 is not None 判断，写成 if status 会让 status=0（关闭）被当成没传
+        query = query.filter(Lab.status == status)
     total = query.count()
     items = (
         query.order_by(Lab.id.desc())

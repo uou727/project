@@ -4,7 +4,6 @@ from sqlalchemy.orm import Session
 from app.common.response import Response
 from app.database import get_db
 from app.dependence.auth import get_current_admin, get_current_user
-from app.models.lab import Lab
 from app.models.user import User
 from app.schemas.lab import LabCreateRequest, LabUpdateRequest
 from app.services import lab_service
@@ -17,19 +16,17 @@ def get_lab_list(
     page: int = 1,
     page_size: int = 10,
     keywords: str | None = None,
-    current_user: Lab = Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    print(1234)
-
-    res = lab_service.get_lab_page_list(db, page, page_size)
+    res = lab_service.get_lab_page_list(db, page, page_size, keywords=keywords)
     return Response.success(data=res)
 
 
 @router.get("/{lab_id}")
 def get_lab(
     lab_id: int,
-    current_user: Lab = Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
     res = lab_service.get_lab(db, lab_id)

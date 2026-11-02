@@ -8,6 +8,7 @@ KB_DIR = BASE_DIR / "data" / "kb"
 CHROMA_DIR = BASE_DIR / "data" / "chroma"
 
 _collection = None
+_embedding_fn = None
 
 
 def get_embedding_fn():

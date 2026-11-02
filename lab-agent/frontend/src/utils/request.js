@@ -35,15 +35,17 @@ service.interceptors.response.use(
   },
   (err) => {
     if (err.response) {
-      const hettpStatusCode = err.response.status
-      if (hettpStatusCode === 401) {
+      const httpStatusCode = err.response.status
+      if (httpStatusCode === 401) {
         ElMessage.error('登录状态失效，请重新登陆')
         logout()
         router.push('/login')
-        return Promise.reject(data)
-      } else {
-        ElMessage.error(err.response.data || '请求失败')
+        return Promise.reject(err)
       }
+      const detail = err.response.data
+      ElMessage.error(
+        typeof detail === 'string' ? detail : detail?.detail || detail?.message || '请求失败'
+      )
     } else {
       ElMessage.error('网络异常，请检查后端服务')
     }

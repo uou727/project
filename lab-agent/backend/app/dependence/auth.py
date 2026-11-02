@@ -27,7 +27,11 @@ def get_current_user(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="无效的登陆凭证"
         )
     # 查询用户信息
-    user = db.query(User).filter(User.id == payload.get("user_id")).first()
+    user = db.get(User, user_id)
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="用户不存在，请重新登录"
+        )
     if user.status != 1:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="用户被禁用，请联系管理员"
@@ -37,7 +41,6 @@ def get_current_user(
 
 def get_current_admin(current_user: User = Depends(get_current_user)) -> User:
     """判断JWT token内角色是否是admin"""
-    print(current_user)
     if current_user.role != "admin":
         raise BusinessException(message="无访问权限", code=403)
     return current_user

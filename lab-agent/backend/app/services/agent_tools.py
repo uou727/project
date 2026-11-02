@@ -5,7 +5,7 @@ from langchain_core.tools import tool
 from sqlalchemy.orm import Session
 
 from app.common.exceptions import BusinessException
-from app.models.reservation import Reservation
+from app.schemas.reservation import ReservationCreateRequest
 from app.services import equipment_service, kb_service, lab_service, reservation_service
 
 
@@ -91,9 +91,18 @@ def build_tools(db: Session, current_user):
         equipment_id: int | None = None,
         remark: str | None = None,
     ) -> str:
-        """创建预约单预约实验室或设备"""
+        """创建预约单预约实验室或设备
+
+        Args:
+            lab_id: 实验室ID，必填，必须来自 list_open_labs 的查询结果
+            date: 预约日期，格式必须是 YYYY-MM-DD，例如 2026-11-03
+            start_time: 开始时间，格式必须是 HH:MM，例如 09:00
+            end_time: 结束时间，格式必须是 HH:MM，例如 11:00
+            equipment_id: 设备ID，可选；不传表示只预约实验室
+            remark: 备注，可选
+        """
         try:
-            data = Reservation(
+            data = ReservationCreateRequest(
                 lab_id=lab_id,
                 equipment_id=equipment_id,
                 date=date,

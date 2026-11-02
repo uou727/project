@@ -4,7 +4,6 @@ from sqlalchemy.orm import Session
 from app.common.response import Response
 from app.database import get_db
 from app.dependence.auth import get_current_admin, get_current_user
-from app.models.equipment import Equipment
 from app.models.user import User
 from app.schemas.equipment import (
     EquipmentCreateRequest,
@@ -33,7 +32,7 @@ def get_equipment_list(
 @router.post("")
 def create_equipment(
     data: EquipmentCreateRequest,
-    current_user: Equipment = Depends(get_current_admin),
+    current_user: User = Depends(get_current_admin),
     db: Session = Depends(get_db),
 ):
     res = equipment_service.create_equipment(db, data)
@@ -44,7 +43,7 @@ def create_equipment(
 def update_equipment(
     equipment_id: int,
     data: EquipmentUpdateRequest,
-    current_user: Equipment = Depends(get_current_admin),
+    current_user: User = Depends(get_current_admin),
     db: Session = Depends(get_db),
 ):
     res = equipment_service.update_equipment(db, equipment_id, data)
@@ -54,7 +53,7 @@ def update_equipment(
 @router.delete("/{equipment_id}")
 def delete_equipment(
     equipment_id: int,
-    current_user: Equipment = Depends(get_current_admin),
+    current_user: User = Depends(get_current_admin),
     db: Session = Depends(get_db),
 ):
     equipment_service.delete_equipment(db, equipment_id)
