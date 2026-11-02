@@ -15,6 +15,24 @@ _embedding_fn = embedding_functions.SentenceTransformerEmbeddingFunction(
 )
 
 
+def get_embedding_fn():
+    """懒加载 embedding 模型：只加载一次，之后复用同一个实例"""
+    global _embedding_fn
+    if _embedding_fn is not None:
+        return _embedding_fn
+    # SentenceTransformerEmbeddingFunction 自带类级缓存，同名模型也不会重复加载
+    _embedding_fn = embedding_functions.SentenceTransformerEmbeddingFunction(
+        model_name="BAAI/bge-small-zh-v1.5"
+    )
+    return _embedding_fn
+
+
+# get_collcetion() 里换掉引用
+# col = client.get_or_create_collection(
+#     name="lab_kb", embedding_function=get_embedding_fn()
+# )
+
+
 # 拿存储向量集合
 def get_collcetion() -> Collection:
     global _collection
@@ -51,12 +69,19 @@ def get_collcetion() -> Collection:
     return col
 
 
+def warmup():
+    """启动的时候初始化向量库"""
+    col = get_collcetion()
+    if col.count() > 0:
+        col.query(query_texts=["预热"], n_results=1)
+
+
 def search(query: str):
     # 根据关键字去检索向量库
     col = get_collcetion()
     if col.count() == 0:
         return
-    limit = min(5, col.count)
+    limit = min(5, col.count())
     res = col.query(query_texts=[query], n_results=limit)
     docs = (res.get("documents") or [[]])[0]  # [list]
     metas = (res.get("metadatas") or [[]])[0]  # [list]

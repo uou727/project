@@ -1,4 +1,5 @@
 import asyncio
+import traceback
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, HTTPException
@@ -21,13 +22,18 @@ from app.models.equipment import Equipment  # noqa
 # 数据库表
 from app.models.lab import Lab  # noqa
 from app.models.reservation import Reservation  # noqa
-from app.services import reservation_service
+from app.services import kb_service, reservation_service
 
 Base.metadata.create_all(bind=engine)  # 自动创建数据库和数据库的表
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    """预热"""
+    try:
+        await asyncio.to_thread(kb_service.warmup)
+    except Exception:
+        traceback.print_exc()
     # 启动项目开启异步的扫描任务
     task = asyncio.create_task(reservation_service.run_expire_scan())
     yield
