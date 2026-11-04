@@ -17,6 +17,7 @@ from app.common.exceptions import (
 )
 from app.config import UPLOAD_DIR
 from app.database import Base, engine
+from app.models.course import Course  # noqa
 from app.models.equipment import Equipment  # noqa
 
 # 数据库表

@@ -36,7 +36,15 @@ const router = createRouter({
           path: 'ai-chat',
           name: 'AIChat',
           component: () => import('@/views/AIChat.vue')
-        }
+        },
+        { path: 'course', name: 'Course', component: () => import('@/views/Course.vue') },
+        { path: 'schedule', name: 'Schedule', component: () => import('@/views/Schedule.vue') },
+        {
+          path: 'schedule-manage',
+          name: 'ScheduleManage',
+          component: () => import('@/views/ScheduleManage.vue')
+        },
+        { path: 'study-plan', name: 'StudyPlan', component: () => import('@/views/StudyPlan.vue') }
       ]
     },
     { path: '/login', name: 'Login', component: () => import('@/views/Login.vue') },

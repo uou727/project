@@ -72,6 +72,22 @@
               <el-icon><ChatDotRound /></el-icon>
               <span>AI智能助手</span>
             </el-menu-item>
+            <el-menu-item index="/manager/course" v-if="userInfo?.role === 'admin'">
+              <el-icon><Reading /></el-icon>
+              课程管理
+            </el-menu-item>
+            <el-menu-item v-if="userInfo?.role !== 'admin'" index="/manager/schedule">
+              <el-icon><Calendar /></el-icon>
+              我的课表
+            </el-menu-item>
+            <el-menu-item index="/manager/schedule-manage" v-if="userInfo?.role === 'admin'">
+              <el-icon><Calendar /></el-icon>
+              课表管理
+            </el-menu-item>
+            <el-menu-item v-if="userInfo?.role !== 'admin'" index="/manager/study-plan">
+              <el-icon><Notebook /></el-icon>
+              学习计划
+            </el-menu-item>
           </el-menu>
         </el-aside>
         <el-main>
@@ -91,9 +107,10 @@ import {
   OfficeBuilding,
   Tickets,
   Document,
-  ChatDotRound
+  ChatDotRound,
+  Calendar,
+  Notebook
 } from '@element-plus/icons-vue'
-
 import { useRouter } from 'vue-router'
 import { removeToken, removeUserInfo } from '@/utils/auth'
 import { useUser } from '@/utils/user'
