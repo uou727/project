@@ -23,6 +23,8 @@ from app.models.equipment import Equipment  # noqa
 # 数据库表
 from app.models.lab import Lab  # noqa
 from app.models.reservation import Reservation  # noqa
+from app.models.schedule import Schedule  # noqa
+from app.models.study_plan import StudyPlan  # noqa
 from app.services import kb_service, reservation_service
 
 Base.metadata.create_all(bind=engine)  # 自动创建数据库和数据库的表

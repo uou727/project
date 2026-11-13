@@ -8,9 +8,9 @@ class Course(Base):
     __tablename__ = "courses"
     __table_args__ = {"comment": "课程信息"}
 
-    name: Mapped[str] = mapped_column(String(50), comment="课程名称", nullable=True)
+    name: Mapped[str] = mapped_column(String(50), comment="课程名称", nullable=False)
     code: Mapped[str | None] = mapped_column(
-        String(50), comment="课程代码", nullable=True
+        String(50), comment="课程代码", nullable=False
     )
     description: Mapped[str | None] = mapped_column(
         Text, comment="课程简介", nullable=False
