@@ -7,6 +7,8 @@ from app.models.user import User
 from app.schemas.study_plan import StudyPlanCreateRequest, StudyPlanResponse
 
 STUDY_PLAN_MAX_LENGTH = 2000
+# 给 AI 参考时最多带多少条历史计划，避免 prompt 无限膨胀
+STUDY_PLAN_RECENT_LIMIT = 20
 
 
 def list_page_plans(
@@ -54,3 +56,26 @@ def delete_study_plan(db: Session, current_user: User, plan_id: int) -> None:
         raise BusinessException("学习计划不存在")
     db.delete(row)
     db.commit()
+
+
+def list_recent_plans(
+    db: Session, current_user: User, limit: int = STUDY_PLAN_RECENT_LIMIT
+) -> list[dict]:
+    """取当前用户最近的学习计划，给 AI 工具用（不分页，避免把整表塞进 prompt）"""
+    rows = (
+        db.query(StudyPlan)
+        .filter(StudyPlan.user_id == current_user.id)
+        .order_by(StudyPlan.id.desc())
+        .limit(limit)
+        .all()
+    )
+    return [
+        {
+            "id": row.id,
+            "content": row.content,
+            "create_time": row.create_time.strftime("%Y-%m-%d %H:%M")
+            if row.create_time
+            else None,
+        }
+        for row in rows
+    ]

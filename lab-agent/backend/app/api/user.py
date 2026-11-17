@@ -26,6 +26,7 @@ def update_user_info(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    """修改当前登录用户的个人资料（角色和状态不允许自己改）。"""
     res = user_service.update_user_info(db, current_user, data)
     return Response.success(data=res)
 

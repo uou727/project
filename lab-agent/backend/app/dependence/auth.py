@@ -15,6 +15,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/auth/login")
 def get_current_user(
     token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
 ) -> User:
+    """解析 Authorization 里的 JWT，校验用户存在且未被禁用，返回当前用户。"""
     try:
         payload = decode_access_token(token)
     except Exception:

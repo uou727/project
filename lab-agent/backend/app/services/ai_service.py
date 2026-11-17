@@ -57,6 +57,10 @@ TOOLS = [
 
 
 def run_tool(db: Session, name: str, arguments: str) -> str:
+    """（已废弃）旧版单 Agent 的工具分发入口，现在由 agent_tools + 编排图接管。
+
+    保留仅为查看历史实现，全项目已无调用点，确认后可整文件删除。
+    """
     try:
         args = json.loads(arguments or "{}")
     except json.JSONDecodeError:

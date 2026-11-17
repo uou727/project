@@ -72,4 +72,5 @@ app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="upload")
 
 @app.get("/")
 def root():
+    """根路径探活接口，用于确认服务已启动。"""
     return {"message": "FastAPI is running!"}

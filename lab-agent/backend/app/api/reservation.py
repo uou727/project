@@ -17,6 +17,7 @@ def create_reservation(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    """学生提交预约申请，创建后为待审核状态。"""
     reservation_service.create_reservation(db, current_user, data)
     return Response.success()
 
@@ -29,6 +30,7 @@ def get_reservation_page_list(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    """分页查询预约记录：学生只看自己的，管理员可看全部。"""
     res = reservation_service.get_reservation_page_list(
         db, current_user, page, page_size, status
     )
@@ -41,6 +43,7 @@ def cancel_reservation(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    """取消预约，只有本人且状态允许时才能取消。"""
     reservation_service.cancel_reservation(db, current_user, reservation_id)
     return Response.success()
 
@@ -52,5 +55,6 @@ def audit_reservation(
     current_user: User = Depends(get_current_admin),
     db: Session = Depends(get_db),
 ):
+    """管理员审核预约，通过或驳回。"""
     reservation_service.audit_reservation(db, reservation_id, data.status)
     return Response.success()

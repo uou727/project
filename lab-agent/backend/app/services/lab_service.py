@@ -11,6 +11,7 @@ from app.schemas.lab import (
 
 
 def get_lab(db: Session, lab_id: int):
+    """按 ID 查询实验室详情，不存在时抛业务异常。"""
     lab = db.query(Lab).filter(Lab.id == lab_id).first()
     if not lab:
         raise BusinessException(message="实验室不存在")
@@ -46,6 +47,7 @@ def get_lab_page_list(
 
 
 def create_lab(db: Session, data: LabCreateRequest):
+    """新增实验室，名称重复直接拒绝。"""
     exist = db.query(Lab).filter(Lab.name == data.name).first()
     if exist:
         raise BusinessException(message="实验室已存在")
@@ -69,6 +71,7 @@ def create_lab(db: Session, data: LabCreateRequest):
 
 
 def update_lab(db: Session, lab_id: int, data: LabUpdateRequest):
+    """更新实验室信息，只覆盖前端传了的字段。"""
     lab = db.query(Lab).filter(Lab.id == lab_id).first()
     if not lab:
         raise BusinessException(message="实验室不存在")
@@ -83,6 +86,7 @@ def update_lab(db: Session, lab_id: int, data: LabUpdateRequest):
 
 
 def delete_lab(db: Session, lab_id: int):
+    """删除实验室。"""
     lab = db.query(Lab).filter(Lab.id == lab_id).first()
     if not lab:
         raise BusinessException(message="实验室不存在")

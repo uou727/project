@@ -17,6 +17,7 @@ def list_courses(
     _: User = Depends(get_current_admin),
     db: Session = Depends(get_db),
 ):
+    """查询课程列表，支持按名称/编码/简介模糊搜索（管理员）。"""
     data = course_service.list_courses(db, keywords)
     return Response.success(data=data)
 
@@ -27,6 +28,7 @@ def create_course(
     _: User = Depends(get_current_admin),
     db: Session = Depends(get_db),
 ):
+    """新增课程（管理员）。"""
     course = course_service.create_course(db, data)
     return Response.success(data=course)
 
@@ -38,6 +40,7 @@ def update_course(
     _: User = Depends(get_current_admin),
     db: Session = Depends(get_db),
 ):
+    """修改课程信息（管理员）。"""
     course = course_service.update_course(db, course_id, data)
     return Response.success(data=course)
 
@@ -48,5 +51,6 @@ def delete_course(
     _: User = Depends(get_current_admin),
     db: Session = Depends(get_db),
 ):
+    """删除课程（管理员）。"""
     course = course_service.delete_course(db, course_id)
     return Response.success()

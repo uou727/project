@@ -9,6 +9,7 @@ class BusinessException(Exception):
     """自定义的业务异常类"""
 
     def __init__(self, message: str, code: int = 400):
+        """message 会直接返回给前端，code 用于区分错误类型（默认 400）。"""
         self.code = code
         self.message = message
         super().__init__(message)

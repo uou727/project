@@ -9,8 +9,8 @@ from app.utils.jwt import create_access_token
 from app.utils.password import hash_password, verify_password
 
 
-# 登录
 def login(db: Session, data: LoginResponse):
+    """校验账号密码与状态，签发 JWT 并返回登录信息。"""
     # 根据用户账号查询数据库
     user = db.query(User).filter(User.username == data.username).first()
 
@@ -25,8 +25,8 @@ def login(db: Session, data: LoginResponse):
     return LoginResponse(token=token, user=UserResponse.model_validate(user))
 
 
-# 注册
 def register(db: Session, data: RegisterRequest) -> None:
+    """学生自助注册，密码哈希后入库，唯一索引冲突时回滚。"""
     exists = db.query(User).filter(User.username == data.username).first()
     if exists:
         raise BusinessException(message="账号已存在")

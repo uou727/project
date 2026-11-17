@@ -60,7 +60,7 @@
           v-model="input"
           type="textarea"
           :rows="2"
-          placeholder="问问实验室怎么预约、开放时间..."
+          placeholder="问实验室预约、今天的课表，或让我帮你排个复习计划…"
           @keydown.enter.exact.prevent="handleSend"
           @keydown.enter.shift.stop
         ></el-input>
@@ -84,7 +84,7 @@ const messages = ref([
   {
     role: 'assistant',
     content:
-      '你好，我是实验室预约助手。可以问规则和开放实验室，也可以说「帮我预约明天下午的实验室」，确认后我会帮你提交。'
+      '你好，我是实验室与学习助手。可以问实验室规则和开放时间、查你自己的课表，也能结合课表和已有学习计划帮你安排复习时间；几件事一起问也没关系。'
   }
 ])
 const input = ref('')
@@ -148,6 +148,13 @@ const handleSend = async () => {
     await chatStreamApi({ messages: history }, (evt) => {
       if (evt.type === 'status') {
         assistant.status = evt.message || '正在思考…'
+      } else if (evt.type === 'agent_start') {
+        // 多 Agent 编排：supervisor 选中的领域，可能一次好几个
+        const labels = (evt.agents || []).map((item) => item.label).join('、')
+        if (labels) {
+          assistant.status = `已分派给${labels}`
+          assistant.steps.push(`分派：${labels}`)
+        }
       } else if (evt.type === 'tool_start') {
         const label = evt.label || evt.name || '工具'
         assistant.status = `正在${label}…`

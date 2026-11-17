@@ -11,11 +11,13 @@ router = APIRouter(prefix="/auth", tags=["权限验证模块"])
 
 @router.post("/login")
 def login(data: LoginRequest, db: Session = Depends(get_db)):
+    """账号密码登录，校验通过后签发 JWT 并返回用户信息。"""
     result = auth_service.login(db, data)
     return Response.success(message="登录成功", data=result)
 
 
 @router.post("/register")
 def register(data: RegisterRequest, db: Session = Depends(get_db)):
+    """学生自助注册：默认角色 student、状态正常，密码哈希后入库。"""
     auth_service.register(db, data)
     return Response.success(message="注册成功")

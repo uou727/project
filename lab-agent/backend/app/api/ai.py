@@ -42,10 +42,16 @@ async def chat_stream(
     data: ChatRequest,
     current_user: User = Depends(get_current_user),
 ):
+    """AI 对话的 SSE 流式接口。
+
+    用 StreamingResponse 逐条推送事件（status / agent_start / tool_start / tool_end / token / error / done）；
+    生成器内部单独开数据库会话，避免把鉴权依赖里的 ORM 对象带进流式工具。
+    """
     # 只保存标量 ID，不把鉴权依赖中的 ORM 对象交给流式工具。
     user_id = current_user.id
 
     async def event_gen():
+        """真正的流式生成器：开独立会话、复核用户，再把编排图事件逐条转成 SSE 帧。"""
         # 生成器开始执行时才创建会话，流结束或取消时关闭。
         with SessionLocal() as db:
             stream_user = db.get(User, user_id)

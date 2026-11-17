@@ -29,6 +29,10 @@ def get_embedding_fn():
 
 # 拿存储向量集合
 def get_collcetion() -> Collection:
+    """获取（首次则创建）Chroma 向量集合，集合为空时自动导入 data/kb 下的 md。
+
+    函数名是历史拼写，调用方都在用，改名要同步改所有引用。
+    """
     global _collection
     if _collection is not None:
         return _collection
@@ -71,7 +75,7 @@ def warmup():
 
 
 def search(query: str):
-    # 根据关键字去检索向量库
+    """检索知识库，返回拼接好的 top2 文档片段，每段带来源文件名。"""
     col = get_collcetion()
     if col.count() == 0:
         return

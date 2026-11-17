@@ -15,10 +15,12 @@ from app.utils.password import hash_password, verify_password
 
 
 def get_user_info(user: User) -> UserResponse:
+    """把当前用户对象转成响应模型（不含密码）。"""
     return UserResponse.model_validate(user)
 
 
 def update_user_info(db: Session, user: User, data: UserUpdateRequest):
+    """用户自己改资料：忽略 role/status，防止越权提升权限。"""
     # pydatic对象转换成字典#
     # data里面有值的更新到数据库 忽略没有值的
     user_dict = data.model_dump(exclude_none=True, exclude={"role", "status"})
@@ -30,6 +32,7 @@ def update_user_info(db: Session, user: User, data: UserUpdateRequest):
 
 
 def update_password(db: Session, user: User, data: PasswordUpdateRequest):
+    """修改密码：先校验原密码，且新旧密码不能相同。"""
     if not verify_password(data.old_password, user.password):
         raise BusinessException(message="原密码错误")
     if data.old_password == data.new_password:
@@ -61,6 +64,7 @@ def get_user_page_list(
 
 
 def create_user(db: Session, data: UserCreateRequest):
+    """管理员创建用户，账号唯一冲突时回滚并提示。"""
     exist = db.query(User).filter(User.username == data.username).first()
     if exist:
         raise BusinessException(message="账号已存在")
@@ -87,6 +91,7 @@ def create_user(db: Session, data: UserCreateRequest):
 
 
 def update_user(db: Session, user_id: int, data: UserUpdateRequest):
+    """管理员更新用户信息，只覆盖传了的字段。"""
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise BusinessException(message="用户不存在")
@@ -101,6 +106,7 @@ def update_user(db: Session, user_id: int, data: UserUpdateRequest):
 
 
 def delete_user(db: Session, user_id: int, current_user: User):
+    """删除用户；不允许删除自己，否则管理员会把自己锁在系统外。"""
     if user_id == current_user.id:
         return BusinessException(message="不能删除当前登录的用户")
     user = db.query(User).filter(User.id == user_id).first()

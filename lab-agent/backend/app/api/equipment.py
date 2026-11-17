@@ -23,6 +23,7 @@ def get_equipment_list(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    """分页查询设备列表，可按关键字和所属实验室筛选。"""
     res = equipment_service.get_equipment_page_list(
         db, page, page_size, keywords, lab_id
     )
@@ -35,6 +36,7 @@ def create_equipment(
     current_user: User = Depends(get_current_admin),
     db: Session = Depends(get_db),
 ):
+    """新增设备（管理员）。"""
     res = equipment_service.create_equipment(db, data)
     return Response.success(data=res)
 
@@ -46,6 +48,7 @@ def update_equipment(
     current_user: User = Depends(get_current_admin),
     db: Session = Depends(get_db),
 ):
+    """修改设备信息（管理员）。"""
     res = equipment_service.update_equipment(db, equipment_id, data)
     return Response.success(data=res)
 
@@ -56,5 +59,6 @@ def delete_equipment(
     current_user: User = Depends(get_current_admin),
     db: Session = Depends(get_db),
 ):
+    """删除设备（管理员）。"""
     equipment_service.delete_equipment(db, equipment_id)
     return Response.success()

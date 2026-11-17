@@ -19,6 +19,7 @@ def get_lab_list(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    """分页查询实验室列表，keywords 按名称模糊匹配。"""
     res = lab_service.get_lab_page_list(db, page, page_size, keywords=keywords)
     return Response.success(data=res)
 
@@ -29,6 +30,7 @@ def get_lab(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    """按 ID 查询实验室详情。"""
     res = lab_service.get_lab(db, lab_id)
     return Response.success(data=res)
 

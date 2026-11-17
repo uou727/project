@@ -22,6 +22,7 @@ def list_page_schedules(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    """分页查询课表：普通学生强制只看自己，管理员可按 user_id 指定。"""
     if current_user.role != "admin":
         user_id = current_user.id
     data = schedule_service.list_page_schedules(db, user_id, date, page, page_size)
@@ -34,6 +35,7 @@ def create_schedule(
     _: User = Depends(get_current_admin),
     db: Session = Depends(get_db),
 ):
+    """给学生排课（管理员）。"""
     res = schedule_service.create_schedule(db, data)
     return Response.success(data=res)
 
@@ -45,6 +47,7 @@ def update_schedule(
     _: User = Depends(get_current_admin),
     db: Session = Depends(get_db),
 ):
+    """修改课表记录（管理员）。"""
     res = schedule_service.update_schedule(db, schedule_id, data)
     return Response.success(data=res)
 
@@ -55,5 +58,6 @@ def delete_schedule(
     _: User = Depends(get_current_admin),
     db: Session = Depends(get_db),
 ):
+    """删除课表记录（管理员）。"""
     schedule_service.delete_schedule(db, schedule_id)
     return Response.success()
